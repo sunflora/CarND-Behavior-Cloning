@@ -198,7 +198,7 @@ While the simulation takes only central images as the input (as suggested in dri
 
 * Determine the Region of Interest (ROI).  Only the middle section of the images with road information are kept as ROI.  The image size is reduced from 320x160 to 320x80.  Here is an example of image post this process:
 
-![ROI](./README/images/img-02-roi.png)
+![ROI](./README/images/img-02-ROI.png)
 
 * The images are downsampled by 2x2. The size of the images is further reduced to 160x40.
 
@@ -223,7 +223,7 @@ Finally, 10% of the training dataset were splitted out to use as the validation 
 
 The result of track one can be seen here:
 
-![<./README/images/video1.png>](https://www.youtube.com/embed/tRlJqSgBXl0)
+[![Track 1](./README/images/video1.png)](https://www.youtube.com/embed/tRlJqSgBXl0)
 
 ###Variable Throttle Values
 
