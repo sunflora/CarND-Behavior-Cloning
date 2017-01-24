@@ -29,7 +29,7 @@ DEBUG = False
 DEBUG_IMAGES = False
 STEERING_ADJUSTMENT_FACTOR = 10.
 SMOOTH_RIDE_HISTORY_COUNT = 5
-SMOOTH_RIDE_HISTORY_WEIGTH = - 0.3
+SMOOTH_RIDE_HISTORY_WEIGHT = - 0.3
 
 steering_angles_history = []
 
@@ -58,7 +58,7 @@ def get_smooth_angle(angle, history):
         sum = sum + h
     average = sum / len(history)
     if DEBUG: print("average: ", average)
-    angle_smooth = angle * (1 - SMOOTH_RIDE_HISTORY_WEIGTH) + average * (SMOOTH_RIDE_HISTORY_WEIGTH)
+    angle_smooth = angle * (1 - SMOOTH_RIDE_HISTORY_WEIGHT) + average * (SMOOTH_RIDE_HISTORY_WEIGHT)
     if DEBUG: print("angle_smooth: ", angle_smooth)
     return angle_smooth
 

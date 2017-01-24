@@ -1,60 +1,55 @@
-Introduction
+##Introduction
 
-What I enjoy the most of participating in the Udacity Self-driving Car Engineer Nanodegree 
-Program is spending time implementation assignment projects.  You can see my previous projects and 
-write-ups here and here.  This third project is called "Use Deep Learning to Clone 
-Driving Behavior."  Udacity put together an awesome simulator that provides a game-like 
-driving environment, where the driving behavior of the human player can be recorded and fed into
+What I enjoy the most about participating in the Udacity Self-Driving Car Engineer Nanodegree is spending time implementing project assignments.  You can view my previous projects and write-ups [here](https://github.com/sunflora/CarND-LaneLines-P1) and [here](https://github.com/sunflora/CarND-Traffic-Sign-Classifier-Project).  
+
+This third project is called "Use Deep Learning to Clone Driving Behavior." Udacity put together an awesome simulator that provides a game-like 
+driving environment, where the driving behavior of a human player can be recorded and fed into
 a deep learning network to learn how to drive.  After the network is properly trained, it will
 have the ability to give instructions to the simulator on how to 'drive' the car autonomously.  
 
-How does it work under the hood?
+###How does it work under the hood?
 
-Just like a human player determines on how to drive the car in the simulator by viewing the road
-conditions (for example, the road ahead is curving towards right or left) displayed on the 
-computer screen, in our project, the neural network will take input of the series of images
-made up of the game video.  Each image is passed through the deep learning network and a steering
-angle is calculated based on the network and the weight of the network.  
+Just like a human player makes decisions on how to maneuver the steering wheel of the car in the simulator by viewing the road conditions, on the computer screen, such as whether the road ahead is curving towards right or left; upon completion of our project, the neural network shall take input in the form of the series of images that the game is made out of and make decisons on which direction and/or how much to turn the steering wheel.  Specificially, each image is first pre-processed and then passed into the deep learning network, the network then calculates and output a steering angle based on the network architecture and the weights of the network.  
  
-In this project, our goal is to create a deep learning model using Keras, a high-level neural networks
+In this project, our goal is to build a deep learning model using Keras, a high-level neural networks
 library running on top of Tensorflow, also an open source library for machine learning algorithms.
-The base of the data is the set of images taken from a central camera mounted in the car windshield 
-simulator as well as steering angle associated with each image.  
+The base of the data is the set of images taken from a central camera mounted in the windshield of the car in the simulator as well as steering angle associated with each image.  
 
-Here is an example of an example image:
+Here is an example of an image before any process has been done on it:
 
-[IMAGE]
+![Original Image](./README/images/img-01-original.png)
 
-This project's learning from behavoir direction to self-driving car is very similar to that of 
-comma.ai, a project whose "approach to Artificial Intelligence for self-driving cars is based 
-on an agent that learns to clone driver behaviors and plans maneuvers by simulating future 
-events in the road."  Comma.ai's approach can be seen here: https://arxiv.org/pdf/1608.01230v1.pdf
 
-I have adopted Comma.ai's model presented on this codebase:
- [https://github.com/commaai/research/blob/master/train_steering_model.py] 
+##Network Model
+
+This project's direction to self-driving car is very similar to that of comma.ai, a project whose "approach to Artificial Intelligence for self-driving cars is based on an agent that learns to clone driver behaviors and plans maneuvers by simulating future 
+events in the road."  Comma.ai's approach is described [here](https://arxiv.org/pdf/1608.01230v1.pdf)
+
+I have adopted Comma.ai's CNN learning model presented on this [codebase]
+ (https://github.com/commaai/research/blob/master/train_steering_model.py).
 
 It is made up of three convolution layers, a flatten layer, two fully connected layer, and four
 exponential linear units (ELUs) and two dropout layers as depicted below:
 
+![Model Architecture](./README/images/model-architecture-p3.png)
+
+
 While these layers introduce nonlinearity into the model, data is normalized by the lamba layer
-to [-0.5, 0.5].
+to [-0.5, 0.5].  Here is a table with more description on the network:
 
-[IMAGE]
+![Network Description](./README/images/network-description.png)
 
-I have kept most of the parameters the same as defined in Comma.ai's train_steering_model.py.
-With one excption, the first dropout rate (p) was increased from 0.2 to 0.5.  This is due to
-discovering exploding gradients as well as overfitting occurs quickly with the number of epochs.
-Another hyper-parameter that was set for this reason is the learning rate.  It was set from 0.001
-the default value to 0.0001.  
+Most of the parameters defined in Comma.ai's train\_steering\_model.py works well for the project with one excption: the first dropout rate (p) was increased from 0.2 to 0.5.  The adjustment was made after discovering exploding gradients as well as overfitting occur quickly with the increase of the number of epochs. Another hyper-parameter that was set for the same reason is the learning rate.  It was set from 0.001, the default value by Keras, to 0.0001.  
+
+###Phased Learning
 
 Inspired by the transfer learning, I have designed the model.py to be able to train an existing
-model.  The non-tabula rasa approach saved me some time working on this project and here is my
-training log.  As you can see in this instance, I ran the model.py five times, each time with
-epoch value of 25, 10, 5, 5, and 5.  Note that I have multiply the steering value by 10 and
-therefore you will see the loss number much larger (10x10 times due to mean square error) than
-without the modification.  In drive.py, the prediction values were divided by 10 prior to sending
-to the simulator.
+model.  I'd like to name this section "Incremental Learning" but that term is already taken in ML world.  This non-tabula rasa approach saved me some time working on this project.
 
+Here is my training log.  As you can see in this particular training session, I ran the model.py five times, each time with epoch value of 25, 10, 5, 5, and 5.  Note that I have multiplied the steering value by 10 and
+therefore you will see the loss number much larger (in fact, 100 times per mean square error) than without the modification.  In drive.py, the prediction values were divided by 10 prior to be sent to the simulator.
+
+```
 Buidling model from ground up...
 Creating model ...
 Creating model completed.
@@ -174,59 +169,65 @@ Epoch 4/5
 38675/38675 [==============================] - 159s - loss: 0.9650 - val_loss: 1.3304
 Epoch 5/5
 38675/38675 [==============================] - 159s - loss: 0.9592 - val_loss: 1.3207
+```
 
-Aside from the learning model, the most important aspect of this project is actually the data itself.
-Here are some processes taken regarding data:
 
-1. Data gathering: While it is fun to play with the simulator, the method for steering maneuvers 
-via holding down the left-mouse button was not very user friendly (for some reason the keyboard
-entry does not work on my MacBook Pro.)  Luckily, Udacity provides a set of data [link] and I end
-up using it for the project instead of my own generated ones.  Here are a step of steps I took to
-pre-processing the data:
+##Data, data, data
 
-2. Data balancing: 
-    a. There are more left-turns on the driving course than right-turns.  The way to 
-    counter this imbalance is to transform and add vertically flipped images to the dataset.  
-    b. There are a lot of data with steering angle 0 in the database.  Instead of removing
-    some of these data and then figure out other ways to argument the data, I decided to insert
-    data with steering angle > 0.01 or < -0.01 into the dataset.
+Aside from determine the learning model, the bulk part of working on this project is actually spent on preparing the dataset.  Here are some steps taken regarding the input dataset:
 
-3. Data argumentation:  
-    a. In the database provided by Udacity, besides the images taken from the centrally mounted
-    camera, there are also images taken from the left- and right-mounted camera.  While the drive.py
-    takes only consideration of images from the central camera.  The images taken by the side cameras
-    provides valuable information and with little manupilation they can also be used for data 
-    argumentation. 
+###1. Data gathering: 
+While it is fun to play with the simulator, holding down the left-mouse button to steer was not very user-friendly. For some reason the keyboard entry for the beta simulator did not work properly on my MacBook Pro. I have therefore just used the default simulator throughout the rest of the project.  Luckily, Udacity provided us with a [set of data](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip) [link] and I ended up using it for the project and discarded my own ones.  
 
-4. Image pre-processing:
-    a. Determine the Region of Interest (ROI).  Only the middle section of the images with road 
-    information are kept as ROI.  The image size is reduced from 320x160 to 320x80.
-    b. The images are downsampled by 2x2. The image size is further reduced to 160x40.
-    c. The images are converted to HSV channel.
+###2. Data balancing: 
+In order to balance the data, I have done the following steps:
 
-[Here are examples of these images]
+* There are more left-turns on the driving course than right-turns.  To counter this imbalance， I vertically flipped the central images and added the result to the dataset.  
+* There are many entries with steering angle 0 in the dataset.  Instead of removing them and figure out other ways to argument the data, I decided to duplicate some of these data with steering angle > 0.01 or < -0.01 into the dataset.  (Todo: I did not do any modification with these images, perhaps that is something to try in the future.)
 
-5. Ampifying the steering values:
-    The steering values are very small and their differences to 0 is very minimal.  I decided to
-    multiply them by 10 to increase the distance between turning and going straight.  This essentially
-    increase the steering output from the network 10 times.  Therefore, it is important to divide
-    the model prediction by 10 before feeding it to the simulator.
+###3. Data argumentation: 
+ 
+In the database provided by Udacity, besides the images taken from the centrally mounted camera, there are also images taken from the left- and right-mounted cameras.  Here are three images taken from the left-camera, center-camera, and right-camera, from left to right:
 
-6. Finally, 10% of the training dataset were splitted out to use as the validation dataset.
+![Images from Three Cameras](./README/images/left-center-right-images.png)
 
+
+While the simulation takes only central images as the input (as suggested in drive.py), the two images taken by the side cameras could also be relevant for learning.  In addition to argumentation, these images provide valuable information in the case where the car has been navigated too much to the left or right.  Consider the left image, if it was taken by the central camera (think only the section that is in the ROI), the car is positioned too much to the right side of the road and it would be better for it to shift itself towards the left side.  How much to the left?  I've chosen a value -0.25 which corresponding to steering 6.25 degrees to the left (since anything less than, and including, -1.0 corresponding to steering 25 degrees to the left).  Similar calculations were done for the images taken by the right camera: with a positive 0.25 value.
+
+###4. Image pre-processing:
+
+* Determine the Region of Interest (ROI).  Only the middle section of the images with road information are kept as ROI.  The image size is reduced from 320x160 to 320x80.  Here is an example of image post this process:
+
+![ROI](./README/images/img-02-roi.png)
+
+* The images are downsampled by 2x2. The size of the images is further reduced to 160x40.
+
+![Down Sample](./README/images/img-03-160x40.png)
+
+* The images are converted to HSV channel.
+
+![HSV Conversion](./README/images/img-04-yuv.png)
+
+* Finally, the value of pixel intensity were normalized to [-0.5, 0.5] and this was done as the first step in the CNN model.  Here is an example of what the image would look like if being plotted out:
+
+![Normalized image](./README/images/img-05-normalized.png)
+
+###5. Ampifying the steering values:
+The steering values out of the simulator are very small and this makes the difference between a turn to going stright to be  miniscule.  I decided to multiply these values by 10 to increase the differentiation between turning and going straight.  This essentially increase the steering prediction from the network by 10 times.  Therefore, it is important to divide the model prediction by 10 before feeding it to the simulator.
+
+###6. Validation Set
+
+Finally, 10% of the training dataset were splitted out to use as the validation dataset.
+
+##Result
 
 The result of track one can be seen here:
-[Link - Track #1]
 
-Variable Throttle Values on drive.py
+<iframe width="560" height="315" src="https://www.youtube.com/embed/tRlJqSgBXl0" frameborder="0" allowfullscreen></iframe>
 
-Since the model is trained on Track 1 images, Track 2 is the ultimate test for generalization. 
-My initial Track 2's steering performance was adequate but the car fell back down the road when 
-trying to climb up.  Track 1 is mostly flat so any throttle value would likely be enough 
-to propel forward (I chose a constant throttle = 0.15 to combat the wobbliness from 
-Udacity's default 0.2.)  In order to help the car successfully climbing up the mountain road 
-(as it already sucessfully detect reasonable steering angle), I put in variable throttle value 
-determined based on the current speed.  Here is my code for variable throttle setting:
+###Variable Throttle Values
+
+Since the model is trained on Track 1 images, Track 2 is the ultimate test for generalization. My initial Track 2's steering performance was adequate but the car fell back down before it was able to rich a top of a small hill.  Track 1 is mostly flat any throttle value would likely be enough to propel the car forward (I chose a constant throttle = 0.15 to combat the wobbliness from Udacity's default 0.2.)  In order to help the car successfully climbing up the hilly sections of Track 2, I put in variable throttle value based on the current speed.  Since the car could sucessfully determine reasonable steering angles, I thought this won't be considered as "cheating."  Here is my code for variable throttle setting:
 
     if float(speed) > 23:
         throttle = -0.1
@@ -239,18 +240,19 @@ determined based on the current speed.  Here is my code for variable throttle se
     else:
         throttle = 0.5
 
-As you can see, I also added a small negative value if the car is going too much of high speed.
-This is useful to prevent the car from hitting the shoulder while going down hill and needing to 
-make a sharp turn.
+A small negative value will be assigned if the car is going too fast.  This happens usually when the car is going down hill on Track 2.  The negative throttle is useful to prevent the car from hitting the shoulder while going down hill and having to make a sharp turn.
 
-Reverse Average of the Steering Angles
+Here is the video of the car finally able to drive autonomously with the help of variable throttling:
 
-While the car can be driven autonomously, I was still not satisfied with the fact that it is 
-wobbly too much.  This unsteady movement will surely give the passenager a headache.  I experimented
-with a few technics to let the car drive more steady.  I decided to emply the Reverse Averaging
-technic that tone down the speed based on average of speed of past several frames.  Here is my
+<iframe width="560" height="315" src="https://www.youtube.com/embed/aau3siRQ3JQ" frameborder="0" allowfullscreen></iframe>
+
+###Reverse Average of the Steering Angles
+
+While the car can be driven autonomously, I was still not satisfied with the fact that it is wobbly too much.  This unsteady movement will surely give the passenager a headache.  I experimented with a few technics to let the car drive more steady.  I decided to employ the Reverse Averaging
+technique that would tone down the steering angle based on average of steering angles of past several frames.  Here is my
 function to calculate the smoother steering angle:
 
+```
 def get_smooth_angle(angle, history):
     sum = 0
     for h in history:
@@ -260,11 +262,13 @@ def get_smooth_angle(angle, history):
     angle_smooth = angle * (1 - SMOOTH_RIDE_HISTORY_WEIGTH) + average * (SMOOTH_RIDE_HISTORY_WEIGTH)
     if DEBUG: print("angle_smooth: ", angle_smooth)
     return angle_smooth
+```
 
-Note that the SMOOTH_RIDE_HISTORY_WEIGTH is set to a small negative number (therefore the term 
-Reverse Average).  I have setting a value 0.3 for a count of 5 of the past frames.  
+Note that the SMOOTH\_RIDE\_HISTORY\_WEIGTH is set to a small negative number, hence I labelled this section to be Reverse Averaging.  I have settled with a value 0.3 for SMOOTH\_RIDE\_HISTORY\_WEIGTH  and a count of 5 of the past frames.  
 
 The result can be seen here:
 
-[link1]
-[link2]
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IKmbeAkPkWA" frameborder="0" allowfullscreen></iframe>
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mvAQM5RCHSk" frameborder="0" allowfullscreen></iframe>

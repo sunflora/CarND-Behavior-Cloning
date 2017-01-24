@@ -170,7 +170,7 @@ def process_data():
         y_train.append(s_left_adj)
 
         if TURNING_INCREASE_FACTOR > 0: 
-            print("Data balancing: adding more turning data")    
+            if DEBUG: print("Data balancing: adding more turning data")    
             if ((s > 0.01) or (s < -0.01)):  #Both Right term and left terms are added
                 count_of_turning_images = count_of_turning_images + 1
                 for i in range(0, TURNING_INCREASE_FACTOR):
@@ -225,20 +225,32 @@ def create_model():
     model = Sequential()
     model.add(Lambda(lambda x: x/127.5 - 1., input_shape=train_image_shape))
     model.add(Convolution2D(16, 8, 8, subsample=(4, 4), border_mode="same"))
+    if DEBUG: print("Output size after C1: ", model.output_shape)
     model.add(ELU())
+    if DEBUG: print("Output size after ELU: ", model.output_shape)
     model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
+    if DEBUG: print("Output size after C2: ", model.output_shape)
     model.add(ELU())
+    if DEBUG: print("Output size after ELU: ", model.output_shape)
     model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
+    if DEBUG: print("Output size after C3: ", model.output_shape)
     model.add(Flatten())
+    if DEBUG: print("Output size after Flatten: ", model.output_shape)
 
 #    model.add(Dropout(.2))
     model.add(Dropout(.5))
+    print("Output size after Dropout: ", model.output_shape)
 
     model.add(ELU())
+    if DEBUG: print("Output size after ELU: ", model.output_shape)
     model.add(Dense(512))
+    if DEBUG: print("Output size after Dense(512): ", model.output_shape)
     model.add(Dropout(.5))
+    if DEBUG: print("Output size after Dropout: ", model.output_shape)
     model.add(ELU())
+    if DEBUG: print("Output size after ELU: ", model.output_shape)
     model.add(Dense(1))
+    if DEBUG: print("Output size after Dense(1): ", model.output_shape)
 
     adam = Adam(lr=LEARNING_RATE)
     model.compile(optimizer=adam,  loss="mse")
