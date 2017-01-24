@@ -223,7 +223,9 @@ Finally, 10% of the training dataset were splitted out to use as the validation 
 
 The result of track one can be seen here:
 
+#####Track 1 - Autonomous Driving:
 [![Track 1](./README/images/video1.png)](https://www.youtube.com/embed/tRlJqSgBXl0)
+
 
 ###Variable Throttle Values
 
@@ -244,7 +246,10 @@ A small negative value will be assigned if the car is going too fast.  This happ
 
 Here is the video of the car finally able to drive autonomously with the help of variable throttling:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/aau3siRQ3JQ" frameborder="0" allowfullscreen></iframe>
+
+#####Track 2 - Autonomous Driving:
+[![Track 2](./README/images/video2.png)](https://www.youtube.com/embed/aau3siRQ3JQ)
+
 
 ###Reverse Average of the Steering Angles
 
@@ -268,7 +273,11 @@ Note that the SMOOTH\_RIDE\_HISTORY\_WEIGHT is set to a small negative number, h
 
 The result can be seen here:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/IKmbeAkPkWA" frameborder="0" allowfullscreen></iframe>
+
+#####Track 1 - Reverse Averaging:
+[![Track 1 - Reverse Averaging](./README/images/video3.png)](https://www.youtube.com/embed/IKmbeAkPkWA)
+
+#####Track 2 - Reverse Averaging 
+[![Track 2 - Reverse Averaging](./README/images/video4.png)](https://www.youtube.com/embed/mvAQM5RCHSk)
 
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/mvAQM5RCHSk" frameborder="0" allowfullscreen></iframe>
