@@ -259,12 +259,12 @@ def get_smooth_angle(angle, history):
         sum = sum + h
     average = sum / len(history)
     if DEBUG: print("average: ", average)
-    angle_smooth = angle * (1 - SMOOTH_RIDE_HISTORY_WEIGTH) + average * (SMOOTH_RIDE_HISTORY_WEIGTH)
+    angle_smooth = angle * (1 - SMOOTH_RIDE_HISTORY_WEIGHT) + average * (SMOOTH_RIDE_HISTORY_WEIGHT)
     if DEBUG: print("angle_smooth: ", angle_smooth)
     return angle_smooth
 ```
 
-Note that the SMOOTH\_RIDE\_HISTORY\_WEIGTH is set to a small negative number, hence I labelled this section to be Reverse Averaging.  I have settled with a value 0.3 for SMOOTH\_RIDE\_HISTORY\_WEIGTH  and a count of 5 of the past frames.  
+Note that the SMOOTH\_RIDE\_HISTORY\_WEIGHT is set to a small negative number, hence I labelled this section to be Reverse Averaging.  I have settled with a value 0.3 for SMOOTH\_RIDE\_HISTORY\_WEIGHT  and a count of 5 of the past frames.  
 
 The result can be seen here:
 
