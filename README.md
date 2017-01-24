@@ -223,7 +223,7 @@ Finally, 10% of the training dataset were splitted out to use as the validation 
 
 The result of track one can be seen here:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/tRlJqSgBXl0" frameborder="0" allowfullscreen></iframe>
+![<./README/images/video1.png>](https://www.youtube.com/embed/tRlJqSgBXl0)
 
 ###Variable Throttle Values
 
